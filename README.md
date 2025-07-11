@@ -94,7 +94,9 @@ Made with ❤️ by Shreyank Agrawal
 <p>Ek last line ,bahut man kr rha tha bol du</p> 
 
 "Phool hai gulaab ka , Sughandh ligiye <br>
-"Dost hai l*du ke support kijiye"
+"Hum thode se unemployed hai support kijiye"
+
+<hr>
 
 # 🧙‍♂️ Contributions
 Pull requests are welcome. For major changes, open an issue first.
@@ -102,4 +104,7 @@ Respect Baba. Respect Auth.
 
 # 📜 License
 MIT
+
+# See You Soon Vatsh 
+<img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/discription.png?raw=true" alt="JWT Baba Logo" />
 
