@@ -1,15 +1,10 @@
 
-# 📜 JWT-BABA README.md Generator by Shreyank
-
-echo "🚧 Generating README.md for jwt-baba..."
-
-cat > README.md << 'EOF'
 <!-- -------------------------- -->
 <!-- 🔥 JWT-BABA BY SHREYANK 🔥 -->
 <!-- -------------------------- -->
 
 <p align="center">
-  <img src="https://your-image-link.png" alt="JWT Baba Logo" width="200"/>
+  <img src="jwt-baba.png" alt="JWT Baba Logo" width="200"/>
 </p>
 
 <h1 align="center">🔐 JWT Baba</h1>
@@ -35,9 +30,9 @@ Setup auth in seconds — just install the package, type `jai baba ki`, and you'
 
 ```bash
 npm install jwt-baba
-
-🚀 Quick Start
-js
+```
+# 🚀 Quick Start
+``` js
 Copy
 Edit
 const express = require('express');
@@ -47,7 +42,9 @@ require('dotenv').config();
 const initAuthSystem = require('jwt-baba');
 
 initAuthSystem(app);
-🔐 Routes Provided
+```
+
+# 🔐 Routes Provided
 Method	Route	Description
 POST	/api/auth/register	Register user
 POST	/api/auth/login	Login + Token
@@ -55,19 +52,21 @@ GET	/protected	Protected Route
 
 🔑 Use token as Bearer:
 
-makefile
+```makefile
 Copy
 Edit
 Authorization: Bearer <your_token_here>
 🧾 .env File Example
-env
+```
+```env
 Copy
 Edit
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/jwtbaba
+MONGO_URI=Ab ye bhi mai batau
 JWT_SECRET=shreyankislegend
+```
 📁 Folder Structure
-pgsql
+```pgsql
 Copy
 Edit
 jwt-baba/
@@ -82,17 +81,24 @@ jwt-baba/
 ├── .env.example
 ├── package.json
 └── README.md
-🪄 Terminal Blessing
-bash
+```
+# 🪄 Terminal Blessing
+``` bash
 Copy
 Edit
 Type "jai baba ki" to activate JWT Baba 🔓
-📸 Screenshots
-<!-- Add image links below when ready -->
-👨‍💻 Author
+```
+# 📸 Screenshots
+<img src="image.png" alt="JWT Baba Logo" />
+
+# 👨‍💻 Author
 Made with ❤️ by Shreyank Agrawal
 
 "Secure toh sab karte hain, swag se karo." — JWT Baba 🧙‍♂️
+
+<p>Ek last line ,bahut man kr rha tha bol du</p> 
+"Phool hai gulaab ka , Sughandh ligiye"
+"Dost hai l*du ke support kijiye"
 
 🧙‍♂️ Contributions
 Pull requests are welcome. For major changes, open an issue first.
