@@ -4,7 +4,7 @@
 <!-- -------------------------- -->
 
 <p align="center">
-  <img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/jwt-baba.png?raw=true" alt="JWT Baba Logo" width="200"/>
+  <img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/jwt-baba.png?raw=true" alt="JWT Baba Logo" width="300"/>
 </p>
 
 <h1 align="center">🔐 JWT Baba</h1>
@@ -106,5 +106,5 @@ Respect Baba. Respect Auth.
 MIT
 
 # See You Soon Vatsh 
-<img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/discription.png?raw=true" alt="JWT Baba Logo" />
+<img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/discription.png?raw=true" alt="JWT Baba Logo" width=600 />
 
