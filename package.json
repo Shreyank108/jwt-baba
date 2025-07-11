@@ -1,0 +1,29 @@
+{
+  "name": "jwt-baba",
+  "version": "1.0.0",
+  "description": "JWT authentication system made easy, secure, and fun — just say 'jai baba ki'.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "jwt",
+    "auth",
+    "authentication",
+    "jsonwebtoken",
+    "express",
+    "mongoose",
+    "fun-auth",
+    "jwt-baba",
+    "secure-login"
+  ],
+  "author": "Shreyank Agrawal",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.6.0"
+  }
+}
