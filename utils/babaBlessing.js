@@ -29,7 +29,7 @@ To activate baba's blessing, type below:
       rl.close();
       callback();
     } else {
-      console.log('❌ Baba naraz ho gaye. Type correctly.');
+      console.log('❌ Baba naraz ho gaye. Type correctly vatsh.');
       rl.close();
     }
   });
