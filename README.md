@@ -4,7 +4,7 @@
 <!-- -------------------------- -->
 
 <p align="center">
-  <img src="jwt-baba.png" alt="JWT Baba Logo" width="200"/>
+  <img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/jwt-baba.png?raw=true" alt="JWT Baba Logo" width="200"/>
 </p>
 
 <h1 align="center">🔐 JWT Baba</h1>
@@ -32,9 +32,8 @@ Setup auth in seconds — just install the package, type `jai baba ki`, and you'
 npm install jwt-baba
 ```
 # 🚀 Quick Start
+server.js or index.js 
 ``` js
-Copy
-Edit
 const express = require('express');
 const app = express();
 require('dotenv').config();
@@ -53,22 +52,20 @@ GET	/protected	Protected Route
 🔑 Use token as Bearer:
 
 ```makefile
-Copy
-Edit
+
 Authorization: Bearer <your_token_here>
-🧾 .env File Example
+
 ```
-```env
-Copy
-Edit
+# 🧾 .env File Example
+```
+
 PORT=5000
 MONGO_URI=Ab ye bhi mai batau
 JWT_SECRET=shreyankislegend
 ```
 📁 Folder Structure
 ```pgsql
-Copy
-Edit
+
 jwt-baba/
 ├── index.js
 ├── auth/
@@ -84,26 +81,25 @@ jwt-baba/
 ```
 # 🪄 Terminal Blessing
 ``` bash
-Copy
-Edit
 Type "jai baba ki" to activate JWT Baba 🔓
 ```
 # 📸 Screenshots
-<img src="image.png" alt="JWT Baba Logo" />
+<img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/image.png?raw=true" alt="JWT Baba Logo" />
 
 # 👨‍💻 Author
 Made with ❤️ by Shreyank Agrawal
 
-"Secure toh sab karte hain, swag se karo." — JWT Baba 🧙‍♂️
+"Seekho || Explore kro || Invent kro" — JWT Baba 🧙‍♂️
 
 <p>Ek last line ,bahut man kr rha tha bol du</p> 
-"Phool hai gulaab ka , Sughandh ligiye"
+
+"Phool hai gulaab ka , Sughandh ligiye <br>
 "Dost hai l*du ke support kijiye"
 
-🧙‍♂️ Contributions
+# 🧙‍♂️ Contributions
 Pull requests are welcome. For major changes, open an issue first.
 Respect Baba. Respect Auth.
 
-📜 License
+# 📜 License
 MIT
 
