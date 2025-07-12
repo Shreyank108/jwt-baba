@@ -152,10 +152,106 @@ req.user me bhi saare updated fields honge.
 
 Tu completely control me rahega ki User schema me kya ho.
 
-# 🧙‍♂️ Final Note:
-Baba flexible hai — chahe student ho ya startup,
-Apna User.js bana ke full control le lo!
-"Baba sab dekh rahe hain" 😇
+# <h1> ⚙️ Advanced Usage with jwt-baba </h1>
+
+# ✅ CORS Setup
+No rocket science needed. Just this on your backend:
+
+```js
+const cors = require('cors');
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}));
+```
+And on frontend (React, etc), you're all set. Axios already works:
+
+```js
+axios.post('http://localhost:5000/api/auth/register', {
+  email: "user@gmail.com",
+  password: "123456"
+});
+```
+Or with token:
+
+```js
+axios.get('http://localhost:5000/me', {
+  headers: {
+    Authorization: `Bearer ${token}`
+  },
+  withCredentials: true
+});
+```
+# 🛠️ Register & Login (Frontend)
+Just two simple functions:
+
+```js
+
+// Register
+const registerUser = async () => {
+  const res = await axios.post('http://localhost:5000/api/auth/register', {
+    email,
+    password,
+  });
+  console.log(res.data); // includes token
+};
+
+// Login
+const loginUser = async () => {
+  const res = await axios.post('http://localhost:5000/api/auth/login', {
+    email,
+    password,
+  });
+  localStorage.setItem('token', res.data.token);
+};
+```
+# 🧙 Custom User.js (if needed)
+
+If you want extra fields like bio, image, etc., just create your own model:
+
+```js
+// models/User.js
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  email: String,
+  password: String,
+  bio: String,
+  image: String
+});
+
+module.exports = mongoose.model('User', userSchema);
+```
+
+Use it like this:
+
+```js
+const User = require('./models/User');
+
+app.get('/me', authMiddleware, async (req, res) => {
+  const user = await User.findById(req.user.id).select('-password');
+  res.json(user);
+});
+```
+# 👤 /me Route (Get Logged-in User)
+
+``JWT`` Baba already gives you the ``req.user`` after middleware. You can easily create a /me route:
+
+```js
+
+const { authMiddleware, User } = require('jwt-baba');
+
+app.get('/me', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+```
+That’s it.
 
 # 👨‍💻 Author
 Made with ❤️ by Shreyank Agrawal
