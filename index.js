@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const authRoutes = require('./auth/authRoutes');
 const authMiddleware = require('./auth/authMiddleware');
 const babaBlessing = require('./utils/babaBlessing');
-
+const User = require('./models/User');
 function initAuthSystem(app) {
   dotenv.config();
   const PORT = process.env.PORT || 5000;
@@ -34,3 +34,4 @@ function initAuthSystem(app) {
 
 module.exports = initAuthSystem;
 module.exports.authMiddleware = authMiddleware;
+module.exports.User = User;
