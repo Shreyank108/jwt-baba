@@ -86,6 +86,77 @@ Type "jai baba ki" to activate JWT Baba 🔓
 # 📸 Screenshots
 <img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/image.png?raw=true" alt="JWT Baba Logo" />
 
+# ✍️ Custom Fields kaise Add karein?
+By default, JWT Baba ek simple User schema use karta hai (name, email, password).
+Lekin agar aapko extra fields chahiye like:
+
+🖼️ image || 📜 bio || 🎂 dob || 🧵 posts (array) || 📞 phoneNumber
+
+Toh aap simply apna User.js banakar override kar sakte ho.
+
+# 📁 Suggested Folder Structure
+Apne app me kuch is tarah rakho:
+
+```sql
+your-app/
+├── models/
+│   └── User.js        ← 👈 Yaha apna custom user model banao
+├── server.js
+└── ...
+```
+
+🛠️ Example: Custom User Model
+
+```js
+// /models/User.js
+
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: { type: String, unique: true },
+  password: String,
+  image: String,
+  bio: String,
+  dob: Date,
+  posts: [String],
+  phoneNumber: String,
+});
+
+module.exports = mongoose.model('User', userSchema);
+```
+# 🔁 How to Override JWT Baba's Default Model
+JWT Baba allows you to override the internal User model.
+Just import initAuthSystem from jwt-baba, and set your own User like this:
+
+```js
+// server.js
+
+const express = require('express');
+const app = express();
+require('dotenv').config();
+
+const initAuthSystem = require('jwt-baba');
+const { authMiddleware } = require('jwt-baba');
+
+// 👇 Apna custom user model inject karo
+const customUserModel = require('./models/User');
+initAuthSystem(app, { customUserModel });
+```
+⚠️ jwt-baba automatically uses your customUserModel if passed during setup.
+
+# ✅ Ab kya hoga?
+Registration aur login ke waqt extra fields bhi MongoDB me save ho jaayenge.
+
+req.user me bhi saare updated fields honge.
+
+Tu completely control me rahega ki User schema me kya ho.
+
+# 🧙‍♂️ Final Note:
+Baba flexible hai — chahe student ho ya startup,
+Apna User.js bana ke full control le lo!
+"Baba sab dekh rahe hain" 😇
+
 # 👨‍💻 Author
 Made with ❤️ by Shreyank Agrawal
 
