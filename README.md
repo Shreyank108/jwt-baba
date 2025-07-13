@@ -253,6 +253,14 @@ app.get('/me', authMiddleware, async (req, res) => {
 ```
 That’s it.
 
+## 🔭 Future Scope
+
+- [ ] 🧪 Add CLI to auto-generate folder structure and custom `User.js`
+- [ ] 🔐 OAuth (Google, GitHub) login support
+- [ ] 🛠️ Admin middleware and role-based access
+- [ ] 🧙‍♂️ `npx create-baba-app` — Zero-config auth starter
+- [ ] 📦 TypeScript support
+
 # 👨‍💻 Author
 Made with ❤️ by Shreyank Agrawal
 
