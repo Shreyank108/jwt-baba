@@ -261,6 +261,16 @@ That’s it.
 - [ ] 🧙‍♂️ `npx create-baba-app` — Zero-config auth starter
 - [ ] 📦 TypeScript support
 
+## ⚠️ Important Note
+
+The name **jwt-baba** is a unique and creative identity built with purpose and vision.  
+Please refrain from publishing any ``npm package`` using the same or deceptively similar name.
+
+> Respecting original work fosters a stronger and more collaborative developer community. 🙏
+
+If you're inspired by this project and wish to extend it, feel free to ``contribute`` or fork with proper attribution.
+
+
 # 👨‍💻 Author
 Made with ❤️ by Shreyank Agrawal
 
