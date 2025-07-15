@@ -34,7 +34,6 @@ function initAuthSystem(app, options = {}) {
       console.error('❌ MongoDB Error:', err);
     }
 
-    app.use(express.json());
     app.use('/api/auth', authRoutes(JWT_SECRET));
 
     app.get('/protected', authMiddleware(JWT_SECRET), (req, res) => {
