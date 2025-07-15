@@ -1,6 +1,6 @@
 {
   "name": "jwt-baba",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "JWT authentication system made easy, secure, and fun — just say 'jai baba ki'.",
   "main": "index.js",
   "scripts": {
