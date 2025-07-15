@@ -200,23 +200,6 @@ useEffect(() => {
 
 ---
 
-## 🔧 Avatar Upload Example (Extra Route)
-
-```js
-app.post('/update-avatar', authMiddleware, async (req, res) => {
-  const { avatar } = req.body;
-
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user.id,
-    { image: avatar },
-    { new: true }
-  );
-
-  res.json({ message: "Avatar updated", user: updatedUser });
-});
-```
-
----
 
 ## 🧾 Axios with Token (Frontend)
 
@@ -255,6 +238,7 @@ axios.get('http://localhost:5000/me', {
 Please don’t publish similarly named packages on NPM.  
 If inspired, feel free to fork — just credit the baba 🙏
 
+"Saaf shabdo m ye naam use mt krna ghode "
 ---
 
 ## 👨‍💻 Author
@@ -262,12 +246,12 @@ If inspired, feel free to fork — just credit the baba 🙏
 Made with ❤️ by **Shreyank Agrawal**
 
 > “Phool hai gulaab ka, sugandh lijiye,  
-> Hum thode se unemployed hai, support kijiye.” 😄
+> Unemployed hai guys , support kijiye.” 😄
 
 ---
 
 ## 🧙‍♂️ Final Blessing
-
+ <p><b>NOTE : </b>Write this in your terminal for jwt-baba activation</p>
 ```bash
 # In your terminal after setup:
 jai baba ki 🔥
