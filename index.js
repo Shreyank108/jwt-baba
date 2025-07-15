@@ -5,7 +5,7 @@ const authRoutes = require('./auth/authRoutes');
 const authMiddleware = require('./auth/authMiddleware');
 const babaBlessing = require('./utils/babaBlessing');
 
-let User; // ✅ Global holder for model
+let User; // ✅ Will hold your model reference
 
 function initAuthSystem(app, options = {}) {
   dotenv.config();
@@ -21,26 +21,31 @@ function initAuthSystem(app, options = {}) {
     return;
   }
 
-  // ✅ Use custom model if provided
-  User = options.customUserModel || (mongoose.models.User || require('./models/User'));
+  // ✅ Avoid OverwriteModelError
+  User = options.customUserModel 
+    ? (mongoose.models.User || options.customUserModel)
+    : (mongoose.models.User || require('./models/User'));
 
-  babaBlessing(() => {
-    mongoose.connect(MONGO_URI)
-      .then(() => console.log('✅ MongoDB Connected'))
-      .catch((err) => console.log('❌ MongoDB Error:', err));
+  babaBlessing(async () => {
+    try {
+      await mongoose.connect(MONGO_URI);
+      console.log('✅ MongoDB Connected');
+    } catch (err) {
+      console.error('❌ MongoDB Error:', err);
+    }
 
     app.use(express.json());
     app.use('/api/auth', authRoutes(JWT_SECRET));
 
     app.get('/protected', authMiddleware(JWT_SECRET), (req, res) => {
-      res.send(`Welcome ${req.user.email}, Baba ki kripa se access mila.`);
+      res.send(`🛡️ Welcome ${req.user.email}, Baba ki kripa se access mila.`);
     });
 
     app.listen(PORT, () => console.log(`🚀 Server running on PORT ${PORT}`));
   });
 }
 
-// ✅ Export everything properly
+// ✅ Exports for users
 module.exports = initAuthSystem;
 module.exports.authMiddleware = authMiddleware;
-module.exports.User = () => User; // Export as a function
+module.exports.User = () => User;
