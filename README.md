@@ -7,9 +7,10 @@
   <img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/jwt-baba.png?raw=true" alt="JWT Baba Logo" width="300"/>
 </p>
 
-<h1 align="center">🔐 JWT Baba</h1>
+# 🔐 JWT BABA
 
-<p align="center"><i>Secure authentication just by chanting <code>"jai baba ki"</code></i></p>
+> Secure authentication in seconds — just chant `jai baba ki` 🧙‍♂️  
+> 🔥 Plug & Play JWT Auth for Express + MongoDB
 
 <p align="center">
   <img src="https://img.shields.io/npm/v/jwt-baba?color=purple&style=for-the-badge" />
@@ -19,10 +20,10 @@
 
 ---
 
-## 🧠 What is JWT Baba?
+## 🧠 What is JWT BABA?
 
-A plug-and-play authentication module built with Node.js, Express, MongoDB, and JWT.  
-Setup auth in seconds — just install the package, type `jai baba ki`, and you're protected!
+A **zero-config authentication package** for Node.js developers using Express and MongoDB.  
+Easily add registration, login, JWT tokens, and protected routes — in **less than 1 minute**.
 
 ---
 
@@ -31,84 +32,66 @@ Setup auth in seconds — just install the package, type `jai baba ki`, and you'
 ```bash
 npm install jwt-baba
 ```
-# 🚀 Quick Start
-server.js or index.js 
-``` js
+
+---
+
+## ⚙️ Environment Setup
+
+`.env` file in root:
+
+```env
+PORT=5000
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/myDB
+JWT_SECRET=shreyankislegend
+```
+
+---
+
+## 🚀 Quick Start
+
+### 📝 `server.js`
+
+```js
 const express = require('express');
+const cors = require('cors');
 const app = express();
 require('dotenv').config();
 
+// ✅ Add Middleware
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(express.json());
+
+// ✅ Initialize JWT-BABA
 const initAuthSystem = require('jwt-baba');
-
-initAuthSystem(app);
+initAuthSystem(app); // 🪄 Baba is activated!
 ```
 
-# 🔐 Routes Provided
-Method	Route	Description
-POST	/api/auth/register	Register user
-POST	/api/auth/login	Login + Token
-GET	/protected	Protected Route
+---
 
-🔑 Use token as Bearer:
+## 🔐 Auth Routes Provided
 
-```makefile
+| Method | Route                 | Description                   |
+|--------|-----------------------|-------------------------------|
+| POST   | `/api/auth/register`  | Register user                 |
+| POST   | `/api/auth/login`     | Login & get JWT token         |
+| GET    | `/protected`          | Test-protected route          |
 
-Authorization: Bearer <your_token_here>
+🧾 **Token Format (Frontend)**
 
 ```
-# 🧾 .env File Example
+Authorization: Bearer <your_token>
 ```
 
-PORT=5000
-MONGO_URI=Ab ye bhi mai batau
-JWT_SECRET=shreyankislegend
-```
-📁 Folder Structure
-```pgsql
+---
 
-jwt-baba/
-├── index.js
-├── auth/
-│   ├── authRoutes.js
-│   └── authMiddleware.js
-├── models/
-│   └── User.js
-├── utils/
-│   └── babaBlessing.js
-├── .env.example
-├── package.json
-└── README.md
-```
-# 🪄 Terminal Blessing
-``` bash
-Type "jai baba ki" to activate JWT Baba 🔓
-```
-# 📸 Screenshots
-<img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/image.png?raw=true" alt="JWT Baba Logo" />
+## ✨ Add Custom Fields to User
 
-# ✍️ Custom Fields kaise Add karein?
-By default, JWT Baba ek simple User schema use karta hai (name, email, password).
-Lekin agar aapko extra fields chahiye like:
+> Want to save `image`, `bio`, `phoneNumber`, etc? Easy!
 
-🖼️ image || 📜 bio || 🎂 dob || 🧵 posts (array) || 📞 phoneNumber
-
-Toh aap simply apna User.js banakar override kar sakte ho.
-
-# 📁 Suggested Folder Structure
-Apne app me kuch is tarah rakho:
-
-```sql
-your-app/
-├── models/
-│   └── User.js        ← 👈 Yaha apna custom user model banao
-├── server.js
-└── ...
-```
-
-🛠️ Example: Custom User Model
+### ✅ Step 1: Create Custom User Model
 
 ```js
-// /models/User.js
+// models/User.js
 
 const mongoose = require('mongoose');
 
@@ -119,127 +102,30 @@ const userSchema = new mongoose.Schema({
   image: String,
   bio: String,
   dob: Date,
-  posts: [String],
   phoneNumber: String,
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);
 ```
-# 🔁 How to Override JWT Baba's Default Model
-JWT Baba allows you to override the internal User model.
-Just import initAuthSystem from jwt-baba, and set your own User like this:
+
+### ✅ Step 2: Inject Custom User
 
 ```js
-// server.js
-
-const express = require('express');
-const app = express();
-require('dotenv').config();
-
 const initAuthSystem = require('jwt-baba');
-const { authMiddleware } = require('jwt-baba');
-
-// 👇 Apna custom user model inject karo
 const customUserModel = require('./models/User');
+
 initAuthSystem(app, { customUserModel });
 ```
-⚠️ jwt-baba automatically uses your customUserModel if passed during setup.
 
-# ✅ Ab kya hoga?
-Registration aur login ke waqt extra fields bhi MongoDB me save ho jaayenge.
+---
 
-req.user me bhi saare updated fields honge.
+## 🧙‍♂️ Using `authMiddleware`
 
-Tu completely control me rahega ki User schema me kya ho.
+JWT-BABA provides ready-made middleware to **protect any route**.
 
-# <h1> ⚙️ Advanced Usage with jwt-baba </h1>
-
-# ✅ CORS Setup
-No rocket science needed. Just this on your backend:
+### ✅ Import & Apply
 
 ```js
-const cors = require('cors');
-
-app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true,
-}));
-```
-And on frontend (React, etc), you're all set. Axios already works:
-
-```js
-axios.post('http://localhost:5000/api/auth/register', {
-  email: "user@gmail.com",
-  password: "123456"
-});
-```
-Or with token:
-
-```js
-axios.get('http://localhost:5000/me', {
-  headers: {
-    Authorization: `Bearer ${token}`
-  },
-  withCredentials: true
-});
-```
-# 🛠️ Register & Login (Frontend)
-Just two simple functions:
-
-```js
-
-// Register
-const registerUser = async () => {
-  const res = await axios.post('http://localhost:5000/api/auth/register', {
-    email,
-    password,
-  });
-  console.log(res.data); // includes token
-};
-
-// Login
-const loginUser = async () => {
-  const res = await axios.post('http://localhost:5000/api/auth/login', {
-    email,
-    password,
-  });
-  localStorage.setItem('token', res.data.token);
-};
-```
-# 🧙 Custom User.js (if needed)
-
-If you want extra fields like bio, image, etc., just create your own model:
-
-```js
-// models/User.js
-const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema({
-  email: String,
-  password: String,
-  bio: String,
-  image: String
-});
-
-module.exports = mongoose.model('User', userSchema);
-```
-
-Use it like this:
-
-```js
-const User = require('./models/User');
-
-app.get('/me', authMiddleware, async (req, res) => {
-  const user = await User.findById(req.user.id).select('-password');
-  res.json(user);
-});
-```
-# 👤 /me Route (Get Logged-in User)
-
-``JWT`` Baba already gives you the ``req.user`` after middleware. You can easily create a /me route:
-
-```js
-
 const { authMiddleware, User } = require('jwt-baba');
 
 app.get('/me', authMiddleware, async (req, res) => {
@@ -247,39 +133,148 @@ app.get('/me', authMiddleware, async (req, res) => {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Something went wrong' });
   }
 });
 ```
-That’s it.
 
-## 🔭 Future Scope
+**🔥 `req.user` already contains decoded ID & email**
 
-- [ ] 🧪 Add CLI to auto-generate folder structure and custom `User.js`
-- [ ] 🔐 OAuth (Google, GitHub) login support
-- [ ] 🛠️ Admin middleware and role-based access
-- [ ] 🧙‍♂️ `npx create-baba-app` — Zero-config auth starter
-- [ ] 📦 TypeScript support
+---
 
-## ⚠️ Important Note
+## 📂 Project Structure (Recommended)
 
-The name **jwt-baba** is a unique and creative identity built with purpose and vision.  
-Please refrain from publishing any ``npm package`` using the same or deceptively similar name.
+```bash
+your-app/
+├── models/
+│   └── User.js          # ← custom user schema
+├── routes/
+│   └── other-routes.js
+├── server.js
+└── .env
+```
 
-> Respecting original work fosters a stronger and more collaborative developer community. 🙏
+---
 
-If you're inspired by this project and wish to extend it, feel free to ``contribute`` or fork with proper attribution.
+## 💻 React Integration Guide
 
+### ✅ Step 1: Registration + Auto Login
 
-# 👨‍💻 Author
-Made with ❤️ by Shreyank Agrawal
+```js
+const handleRegister = async () => {
+  const res = await axios.post('http://localhost:5000/api/auth/register', {
+    name, email, password
+  });
 
-"Seekho || Explore kro || Invent kro" — JWT Baba 🧙‍♂️
+  // 🧙 Auto-login after register
+  const loginRes = await axios.post('http://localhost:5000/api/auth/login', {
+    email, password
+  });
 
-<p>Ek last line ,bahut man kr rha tha bol du</p> 
+  localStorage.setItem('authToken', loginRes.data.token);
+  alert("User logged in!");
+};
+```
 
-"Phool hai gulaab ka , Sughandh ligiye <br>
-"Hum thode se unemployed hai support kijiye"
+---
+
+### ✅ Step 2: Protecting React Routes
+
+```js
+useEffect(() => {
+  const fetchUser = async () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) return;
+
+    const res = await axios.get('http://localhost:5000/me', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log(res.data); // ← Logged-in user info
+  };
+
+  fetchUser();
+}, []);
+```
+
+---
+
+## 🔧 Avatar Upload Example (Extra Route)
+
+```js
+app.post('/update-avatar', authMiddleware, async (req, res) => {
+  const { avatar } = req.body;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    { image: avatar },
+    { new: true }
+  );
+
+  res.json({ message: "Avatar updated", user: updatedUser });
+});
+```
+
+---
+
+## 🧾 Axios with Token (Frontend)
+
+```js
+axios.get('http://localhost:5000/me', {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('authToken')}`
+  }
+});
+```
+
+---
+
+## 📸 Screenshots
+
+<p align="center">
+  <img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/image.png?raw=true" alt="JWT Baba Demo" width="600" />
+</p>
+
+---
+
+## 🧪 Future Roadmap
+
+- [ ] `npx create-baba-app` CLI
+- [ ] OAuth login (Google, GitHub)
+- [ ] Admin/Role middleware
+- [ ] Built-in UI components for login/register
+- [ ] TypeScript Support
+
+---
+
+## ⚠️ Name Protection Notice
+
+**jwt-baba** is a creative identity built with love and purpose.
+
+Please don’t publish similarly named packages on NPM.  
+If inspired, feel free to fork — just credit the baba 🙏
+
+---
+
+## 👨‍💻 Author
+
+Made with ❤️ by **Shreyank Agrawal**
+
+> “Phool hai gulaab ka, sugandh lijiye,  
+> Hum thode se unemployed hai, support kijiye.” 😄
+
+---
+
+## 🧙‍♂️ Final Blessing
+
+```bash
+# In your terminal after setup:
+jai baba ki 🔥
+```
+
+Thanks for using **JWT BABA** — may your APIs stay protected and bugs stay away!
+
 
 <hr>
 
