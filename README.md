@@ -218,7 +218,7 @@ axios.get('http://localhost:5000/me', {
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="https://github.com/Shreyank108/jwt-baba/blob/main/public/image.png?raw=true" alt="JWT Baba Demo" width="600" />
+  <img src="[https://github.com/Shreyank108/jwt-baba/blob/main/public/image.png?raw=true](https://github.com/Shreyank108/JWT-Placeholder/blob/main/public/image.png?raw=true)" alt="JWT Baba Demo" width="600" />
 </p>
 
 ---
