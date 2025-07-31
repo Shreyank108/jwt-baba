@@ -3,9 +3,8 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const authRoutes = require('./auth/authRoutes');
 const authMiddleware = require('./auth/authMiddleware');
-const babaBlessing = require('./utils/babaBlessing');
 
-let User; // ✅ Will hold your model reference
+let User;
 
 function initAuthSystem(app, options = {}) {
   dotenv.config();
@@ -21,12 +20,12 @@ function initAuthSystem(app, options = {}) {
     return;
   }
 
-  // ✅ Avoid OverwriteModelError
   User = options.customUserModel 
     ? (mongoose.models.User || options.customUserModel)
     : (mongoose.models.User || require('./models/User'));
 
-  babaBlessing(async () => {
+  // 🚀 System starts directly — no Baba needed
+  (async () => {
     try {
       await mongoose.connect(MONGO_URI);
       console.log('✅ MongoDB Connected');
@@ -37,14 +36,13 @@ function initAuthSystem(app, options = {}) {
     app.use('/api/auth', authRoutes(JWT_SECRET));
 
     app.get('/protected', authMiddleware(JWT_SECRET), (req, res) => {
-      res.send(`🛡️ Welcome ${req.user.email}, Baba ki kripa se access mila.`);
+      res.send(`🛡️ Welcome ${req.user.email}, you have accessed a protected route.`);
     });
 
     app.listen(PORT, () => console.log(`🚀 Server running on PORT ${PORT}`));
-  });
+  })();
 }
 
-// ✅ Exports for users
 module.exports = initAuthSystem;
 module.exports.authMiddleware = authMiddleware;
 module.exports.User = () => User;
