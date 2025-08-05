@@ -1,56 +1,108 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const { validateRegister, validateLogin } = require('../utils/validation');
 
-function authRoutes(JWT_SECRET) {
+const authRoutes = (User) => {
   const router = express.Router();
 
-  // ✅ REGISTER + AUTO LOGIN
-  router.post('/register', async (req, res) => {
-    const { name, email, password } = req.body;
+  // Register route with validation
+  router.post('/register', validateRegister, async (req, res) => {
     try {
-      const existing = await User.findOne({ email });
-      if (existing) return res.status(400).json({ message: 'User already exists' });
+      const { name, email, password } = req.body;
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+      // Check if user already exists
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'User with this email already exists'
+        });
+      }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 12);
+      
+      // Create user
       const user = new User({ name, email, password: hashedPassword });
       await user.save();
 
-      // ✅ Auto-generate token after register
-      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+      // Generate JWT token
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+      // Remove password from response
+      const userResponse = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt
+      };
 
       res.status(201).json({
+        success: true,
         message: 'User registered and logged in successfully',
         token,
-        user,
+        user: userResponse
       });
-    } catch (err) {
-      console.error('❌ Registration error:', err);
-      res.status(500).json({ message: 'Error in registration' });
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
     }
   });
 
-  // ✅ LOGIN
-  router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+  // Login route with validation
+  router.post('/login', validateLogin, async (req, res) => {
     try {
-      const user = await User.findOne({ email });
-      if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+      const { email, password } = req.body;
 
+      // Find user
+      const user = await User.findOne({ email }).select('+password');
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid email or password'
+        });
+      }
+
+      // Check password
       const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+      if (!isMatch) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid email or password'
+        });
+      }
 
-      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+      // Generate JWT token
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-      res.json({ message: 'Login successful', token, user });
-    } catch (err) {
-      console.error('❌ Login error:', err);
-      res.status(500).json({ message: 'Login error' });
+      // Remove password from response
+      const userResponse = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt
+      };
+
+      res.status(200).json({
+        success: true,
+        message: 'Login successful',
+        token,
+        user: userResponse
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
     }
   });
 
   return router;
-}
+};
 
 module.exports = authRoutes;
