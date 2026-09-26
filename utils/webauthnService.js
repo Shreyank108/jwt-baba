@@ -54,7 +54,7 @@ class WebAuthnService {
   }
 
   _startChallengeCleanup() {
-    setInterval(() => {
+    const interval = setInterval(() => {
       const now = Date.now();
       for (const [key, value] of this.challenges.entries()) {
         if (now - value.timestamp > CHALLENGE_TIMEOUT) {
@@ -62,6 +62,7 @@ class WebAuthnService {
         }
       }
     }, 60000); // Cleanup every minute
+    interval.unref();
   }
 
   _storeChallenge(userId, challenge, type = 'registration') {
@@ -72,9 +73,10 @@ class WebAuthnService {
     });
 
     // Auto-expire after timeout
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       this.challenges.delete(key);
     }, CHALLENGE_TIMEOUT);
+    timeout.unref();
   }
 
   _getChallenge(userId, type = 'registration') {
@@ -113,12 +115,12 @@ class WebAuthnService {
     const options = await generateRegistrationOptions({
       rpName: this.rpName,
       rpID: this.rpID,
-      userID: webauthnUserId,
+      userID: Buffer.from(webauthnUserId, 'base64url'),
       userName: user.email,
       userDisplayName: user.name || user.email,
       attestationType: 'none',
       excludeCredentials: existingCredentials.map(cred => ({
-        id: Buffer.from(cred.credentialId, 'base64url'),
+        id: cred.credentialId,
         type: 'public-key',
         transports: cred.transports
       })),
@@ -160,7 +162,7 @@ class WebAuthnService {
     const { registrationInfo } = verification;
 
     return {
-      credentialId: Buffer.from(registrationInfo.credentialID).toString('base64url'),
+      credentialId: registrationInfo.credentialID,
       credentialPublicKey: Buffer.from(registrationInfo.credentialPublicKey),
       counter: registrationInfo.counter,
       credentialDeviceType: registrationInfo.credentialDeviceType,
@@ -174,7 +176,7 @@ class WebAuthnService {
     const options = await generateAuthenticationOptions({
       rpID: this.rpID,
       allowCredentials: userCredentials.map(cred => ({
-        id: Buffer.from(cred.credentialId, 'base64url'),
+        id: cred.credentialId,
         type: 'public-key',
         transports: cred.transports
       })),
