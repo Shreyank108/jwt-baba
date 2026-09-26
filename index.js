@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const authRoutes = require('./auth/authRoutes');
 const authMiddleware = require('./auth/authMiddleware');
+const passkeyRoutes = require('./auth/passkeyRoutes');
+const { initWebAuthnService } = require('./utils/webauthnService');
 
 let User;
 
@@ -20,9 +22,32 @@ function initAuthSystem(app, options = {}) {
     return;
   }
 
-  User = options.customUserModel 
+  User = options.customUserModel
     ? (mongoose.models.User || options.customUserModel)
     : (mongoose.models.User || require('./models/User'));
+
+  // Initialize WebAuthn if configuration is provided
+  let webauthnEnabled = false;
+  if (options.webauthn) {
+    try {
+      const webauthnConfig = {
+        rpName: options.webauthn.rpName || 'JWT-BABA',
+        rpID: options.webauthn.rpID || process.env.WEBAUTHN_RP_ID,
+        origin: options.webauthn.origin || process.env.WEBAUTHN_ORIGIN
+      };
+
+      if (webauthnConfig.rpID && webauthnConfig.origin) {
+        initWebAuthnService(webauthnConfig);
+        webauthnEnabled = true;
+        console.log('✅ WebAuthn/Passkey authentication enabled');
+      } else {
+        console.log('⚠️  WebAuthn disabled: WEBAUTHN_RP_ID and WEBAUTHN_ORIGIN not configured');
+      }
+    } catch (err) {
+      console.error('❌ WebAuthn initialization failed:', err.message);
+      console.log('⚠️  Continuing without passkey support');
+    }
+  }
 
   // 🚀 System starts directly — no Baba needed
   (async () => {
@@ -33,7 +58,13 @@ function initAuthSystem(app, options = {}) {
       console.error('❌ MongoDB Error:', err);
     }
 
+    // Traditional password authentication routes
     app.use('/api/auth', authRoutes(JWT_SECRET));
+
+    // Passkey/WebAuthn routes (if enabled)
+    if (webauthnEnabled) {
+      app.use('/api/auth/passkey', passkeyRoutes(JWT_SECRET));
+    }
 
     app.get('/protected', authMiddleware(JWT_SECRET), (req, res) => {
       res.send(`🛡️ Welcome ${req.user.email}, you have accessed a protected route.`);

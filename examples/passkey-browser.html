@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JWT-BABA Passkey Demo - Browser Example</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 32px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .passkey-list {
+      margin-top: 20px;
+    }
+
+    .passkey-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .passkey-info {
+      flex: 1;
+    }
+
+    .passkey-name {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .passkey-meta {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .passkey-remove {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      width: auto;
+    }
+
+    .fingerprint-icon {
+      font-size: 48px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 JWT-BABA</h1>
+    <p class="subtitle">Passwordless Authentication with Passkeys</p>
+
+    <!-- Tab Navigation -->
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="switchTab('password')">Password</button>
+      <button class="tab-btn" onclick="switchTab('passkey')">Passkey</button>
+      <button class="tab-btn" onclick="switchTab('manage')">Manage</button>
+    </div>
+
+    <!-- Password Login Tab -->
+    <div id="password-tab" class="tab-content active">
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="pwd-email" placeholder="your@email.com">
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="pwd-password" placeholder="Your password">
+      </div>
+      <button onclick="passwordLogin()">Login with Password</button>
+      <div id="pwd-message"></div>
+    </div>
+
+    <!-- Passkey Login Tab -->
+    <div id="passkey-tab" class="tab-content">
+      <div class="fingerprint-icon">👆</div>
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="passkey-email" placeholder="your@email.com">
+      </div>
+      <button onclick="passkeyLogin()">🔓 Login with Passkey</button>
+      <div id="passkey-message"></div>
+    </div>
+
+    <!-- Manage Passkeys Tab -->
+    <div id="manage-tab" class="tab-content">
+      <div id="logged-in-view" class="hidden">
+        <button onclick="registerPasskey()">➕ Add New Passkey</button>
+        <button onclick="loadPasskeys()" style="background: #6c757d; margin-top: 10px;">🔄 Refresh List</button>
+        <div id="passkey-list" class="passkey-list"></div>
+      </div>
+      <div id="not-logged-in-view">
+        <div class="message info">
+          Please login first to manage your passkeys.
+        </div>
+      </div>
+      <div id="manage-message"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    const API_BASE = 'http://localhost:5000/api';
+    let accessToken = localStorage.getItem('accessToken');
+
+    window.switchTab = function(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      event.target.classList.add('active');
+      document.getElementById(`${tab}-tab`).classList.add('active');
+
+      if (tab === 'manage') {
+        updateManageView();
+      }
+    };
+
+    function updateManageView() {
+      const loggedIn = !!accessToken;
+      document.getElementById('logged-in-view').classList.toggle('hidden', !loggedIn);
+      document.getElementById('not-logged-in-view').classList.toggle('hidden', loggedIn);
+      if (loggedIn) {
+        loadPasskeys();
+      }
+    }
+
+    function showMessage(elementId, message, type) {
+      const el = document.getElementById(elementId);
+      el.className = `message ${type}`;
+      el.textContent = message;
+    }
+
+    // Password Login
+    window.passwordLogin = async function() {
+      const email = document.getElementById('pwd-email').value;
+      const password = document.getElementById('pwd-password').value;
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          accessToken = data.accessToken;
+          localStorage.setItem('accessToken', data.accessToken);
+          localStorage.setItem('refreshToken', data.refreshToken);
+          showMessage('pwd-message', `✅ ${data.message}`, 'success');
+        } else {
+          showMessage('pwd-message', `❌ ${data.message}`, 'error');
+        }
+      } catch (err) {
+        showMessage('pwd-message', `❌ ${err.message}`, 'error');
+      }
+    };
+
+    // Passkey Login
+    window.passkeyLogin = async function() {
+      const email = document.getElementById('passkey-email').value;
+
+      if (!email) {
+        showMessage('passkey-message', '❌ Please enter your email', 'error');
+        return;
+      }
+
+      try {
+        // Step 1: Get authentication options
+        const optionsRes = await fetch(`${API_BASE}/auth/passkey/login/options`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        if (!optionsRes.ok) {
+          const error = await optionsRes.json();
+          showMessage('passkey-message', `❌ ${error.message}`, 'error');
+          return;
+        }
+
+        const options = await optionsRes.json();
+
+        // Step 2: Use browser's WebAuthn API
+        showMessage('passkey-message', '👆 Touch your fingerprint sensor...', 'info');
+
+        const credential = await navigator.credentials.get({
+          publicKey: {
+            ...options,
+            challenge: Uint8Array.from(atob(options.challenge.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0)),
+            allowCredentials: options.allowCredentials.map(cred => ({
+              ...cred,
+              id: Uint8Array.from(atob(cred.id.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0))
+            }))
+          }
+        });
+
+        // Step 3: Verify with server
+        const verifyRes = await fetch(`${API_BASE}/auth/passkey/login/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            credential: {
+              id: credential.id,
+              rawId: btoa(String.fromCharCode(...new Uint8Array(credential.rawId))),
+              type: credential.type,
+              response: {
+                clientDataJSON: btoa(String.fromCharCode(...new Uint8Array(credential.response.clientDataJSON))),
+                authenticatorData: btoa(String.fromCharCode(...new Uint8Array(credential.response.authenticatorData))),
+                signature: btoa(String.fromCharCode(...new Uint8Array(credential.response.signature))),
+                userHandle: credential.response.userHandle ? btoa(String.fromCharCode(...new Uint8Array(credential.response.userHandle))) : null
+              }
+            }
+          })
+        });
+
+        const verifyData = await verifyRes.json();
+
+        if (verifyRes.ok) {
+          accessToken = verifyData.accessToken;
+          localStorage.setItem('accessToken', verifyData.accessToken);
+          localStorage.setItem('refreshToken', verifyData.refreshToken);
+          showMessage('passkey-message', `✅ ${verifyData.message}`, 'success');
+        } else {
+          showMessage('passkey-message', `❌ ${verifyData.message}`, 'error');
+        }
+      } catch (err) {
+        showMessage('passkey-message', `❌ ${err.message}`, 'error');
+      }
+    };
+
+    // Register Passkey
+    window.registerPasskey = async function() {
+      if (!accessToken) {
+        showMessage('manage-message', '❌ Please login first', 'error');
+        return;
+      }
+
+      try {
+        // Step 1: Get registration options
+        const optionsRes = await fetch(`${API_BASE}/auth/passkey/register/options`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!optionsRes.ok) {
+          const error = await optionsRes.json();
+          showMessage('manage-message', `❌ ${error.message}`, 'error');
+          return;
+        }
+
+        const options = await optionsRes.json();
+
+        // Step 2: Create credential using browser WebAuthn
+        showMessage('manage-message', '👆 Touch your fingerprint sensor to register...', 'info');
+
+        const credential = await navigator.credentials.create({
+          publicKey: {
+            ...options,
+            challenge: Uint8Array.from(atob(options.challenge.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0)),
+            user: {
+              ...options.user,
+              id: Uint8Array.from(atob(options.user.id.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0))
+            },
+            excludeCredentials: options.excludeCredentials?.map(cred => ({
+              ...cred,
+              id: Uint8Array.from(atob(cred.id.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0))
+            })) || []
+          }
+        });
+
+        // Step 3: Verify with server
+        const deviceName = prompt('Name this device (e.g., "MacBook Pro", "iPhone"):') || 'Unknown Device';
+
+        const verifyRes = await fetch(`${API_BASE}/auth/passkey/register/verify`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            deviceName,
+            credential: {
+              id: credential.id,
+              rawId: btoa(String.fromCharCode(...new Uint8Array(credential.rawId))),
+              type: credential.type,
+              response: {
+                clientDataJSON: btoa(String.fromCharCode(...new Uint8Array(credential.response.clientDataJSON))),
+                attestationObject: btoa(String.fromCharCode(...new Uint8Array(credential.response.attestationObject))),
+                transports: credential.response.getTransports ? credential.response.getTransports() : []
+              }
+            }
+          })
+        });
+
+        const verifyData = await verifyRes.json();
+
+        if (verifyRes.ok) {
+          showMessage('manage-message', `✅ ${verifyData.message}`, 'success');
+          loadPasskeys();
+        } else {
+          showMessage('manage-message', `❌ ${verifyData.message}`, 'error');
+        }
+      } catch (err) {
+        showMessage('manage-message', `❌ ${err.message}`, 'error');
+      }
+    };
+
+    // Load Passkeys
+    window.loadPasskeys = async function() {
+      if (!accessToken) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/passkey/list`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+
+        const data = await res.json();
+
+        const listEl = document.getElementById('passkey-list');
+        if (data.passkeys.length === 0) {
+          listEl.innerHTML = '<div class="message info">No passkeys registered yet.</div>';
+        } else {
+          listEl.innerHTML = data.passkeys.map(pk => `
+            <div class="passkey-item">
+              <div class="passkey-info">
+                <div class="passkey-name">${pk.deviceName}</div>
+                <div class="passkey-meta">
+                  ${pk.credentialDeviceType} •
+                  Created: ${new Date(pk.createdAt).toLocaleDateString()} •
+                  Last used: ${new Date(pk.lastUsedAt).toLocaleDateString()}
+                </div>
+              </div>
+              <button class="passkey-remove" onclick="removePasskey('${pk.id}')">Remove</button>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        showMessage('manage-message', `❌ ${err.message}`, 'error');
+      }
+    };
+
+    // Remove Passkey
+    window.removePasskey = async function(passkeyId) {
+      if (!confirm('Remove this passkey?')) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/passkey/${passkeyId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showMessage('manage-message', `✅ ${data.message}`, 'success');
+          loadPasskeys();
+        } else {
+          showMessage('manage-message', `❌ ${data.message}`, 'error');
+        }
+      } catch (err) {
+        showMessage('manage-message', `❌ ${err.message}`, 'error');
+      }
+    };
+
+    // Initialize
+    updateManageView();
+  </script>
+</body>
+</html>
