@@ -1,6 +1,6 @@
 {
   "name": "jwt-baba",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Flagship authentication system with WebAuthn/Passkeys, biometric login, JWT tokens, and enterprise security — Jai Baba Ki!",
   "main": "index.js",
   "scripts": {
